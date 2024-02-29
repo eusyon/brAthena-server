@@ -1,0 +1,1 @@
+As pastas seguem o nome e ordem do rAthena para evitar conflitos e facilitar o suporte no fórum do rAthena. Não iremos traduzir os nomes das pastas, como era feito no antigo brAthena. As traduções serão únicas e exclusivamente dos textos exibidos para o jogador. Como administrador, é importante que você tenha um entendimento básico de inglês para buscar suporte no futuro.
