@@ -1,0 +1,543 @@
+//===== rAthena Script =======================================
+//= Thief Job Quest
+//===== By: ==================================================
+//= rAthena Dev Team
+//===== Current Version: =====================================
+//= 1.8
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= [Official Conversion]
+//= Job quest for Thief classes
+//===== Additional Comments: =================================
+//= 1.0 Fully working.
+//= 1.1 Added instant job change for High Novice [Lupus]
+//= 1.3 Added Baby Class support [Lupus]
+//= 1.4 Optimised and moved first checker to Jfunc1-1 [massdriller]
+//=     Fixed possible EXP abuse [Lupus]
+//= 1.5 Now saves/restores all quest skills [Lupus]
+//= 1.6 Merged back JFunc [Lupus] 1.6a typos
+//= 1.7 Rescripted to Aegis 10.3 stadards. [L0ne_W0lf]
+//=     No longer uses function "F_ToHigh"
+//= 1.8 Added Quest Log commands. [L0ne_W0lf]
+//============================================================
+
+moc_prydb1,39,129,2	script	Guia dos Gatunos	69,{
+
+	.npcNameTitle$ = "[Guia dos Gatunos]";
+
+	if (Upper == 1) {
+		if (ADVJOB == Job_Assassin_Cross || ADVJOB == Job_Stalker) {
+			if (Class == Job_Novice_High) {
+				mes .npcNameTitle$;
+				mes Sex == SEX_MALE 
+				? "Ué? Eu te conheço? É estranho como você parece tão familiar. Você não tem um irmão gêmeo, tem?" 
+				: "Ué? Eu te conheço? É estranho como você parece tão familiar. Você não tem uma irmã gêmea, tem?";
+				next;
+				if (!callfunc("F_CanChangeJob")) {
+					mes .npcNameTitle$;
+					mes Sex == SEX_MALE 
+					? "O quê? Você quer ser um Gatuno?" 
+					: "O quê? Você quer ser uma Gatuna?";
+					mes "Desculpe, mas parece que você precisa treinar um pouco mais.";
+					next;
+					mes .npcNameTitle$;
+					mes "Vá com calma e aprenda todas as Habilidades Básicas, entendeu? Volte a falar comigo depois.";
+					close;
+				}
+				mes .npcNameTitle$;
+				mes "Parece que você já passou por muitas coisas nesta vida. Nada mais justo do que te transformar em "
+				+ ((Sex)? "Gatuno" : "Gatuna") +
+				" agora mesmo.";
+				next;
+				skill "NV_TRICKDEAD",0,SKILL_PERM;
+				jobchange Job_Thief_High;
+				skill "TF_SPRINKLESAND",1,SKILL_PERM;
+				skill "TF_BACKSLIDING",1,SKILL_PERM;
+				skill "TF_PICKSTONE",1,SKILL_PERM;
+				skill "TF_THROWSTONE",1,SKILL_PERM;
+				mes .npcNameTitle$;
+				mes "Agora que você se tornou " 
+				+ ((Sex)? "um Gatuno" : "uma Gatuna") + 
+				", viva como " 
+				+ ((Sex)? "um Gatuno" : "uma Gatuna") + 
+				". É hora de mostrar o que você sabe fazer.";
+				close;
+			}
+			else {
+				mes .npcNameTitle$;
+				mes Sex == SEX_MALE ? "Oi, cara." : "Oi, princesa.";
+				close;
+			}
+		}
+		else {
+			mes .npcNameTitle$;
+			mes Sex == SEX_MALE ? "Oi, cara." : "Oi, princesa.";
+			mes "....Ei! Você é muito inocente para querer se tornar um Gatuno. Vá embora, estou ocupada. Próximo!";
+			close;
+		}
+	}
+	if (BaseJob == Job_Thief) {
+		mes .npcNameTitle$;
+		mes "A vida de um Gatuno não é fácil. Se precisar de ajuda com alguma coisa, não me procure, tudo bem?";
+		close;
+	}
+	else if (BaseJob != Job_Novice && BaseJob != Job_Thief) {
+		mes .npcNameTitle$;
+		mes "Como assim?";
+		mes "...";
+		next;
+		mes .npcNameTitle$;
+		switch(Class) {
+		case 1:
+			mes "Hm...";
+			mes "Que espadão em...";
+			next;
+			mes .npcNameTitle$;
+			mes "Então...";
+			mes "Tá pagando alguma promessa, colega?";
+			break;
+		case 2:
+			mes Sex == SEX_MALE ? "Um Mago por aqui?" : "Uma Maga por aqui?";
+			mes "Deveria estar cuspindo fogo em outro lugar. Enfim, vivemos em um país livre...";
+			next;
+			mes .npcNameTitle$;
+			mes "Ah, espera,";
+			mes "não é...";
+			mes "Mete o pé daqui!";
+			break;
+		case 3:
+			mes "Pô, não era para vocês estarem brincando de arco e flecha na floresta?";
+			break;
+		case 4:
+			mes "Você sabe que todos aqui ganham a vida roubando, né? O que um Noviço como você faz nesse lugar?";
+			break;
+		case 5:
+			mes "Você é um Mercador, não é? Por que raios está entrando em um covil de ladrões?";
+			next;
+			mes .npcNameTitle$;
+			mes "Tá pedindo pra ser roubado? Anda logo, saia daqui.";
+			break;
+		case 8:
+			mes "Minha Nossa Senhora!";
+			mes "Estou morrendo?";
+			next;
+			mes .npcNameTitle$;
+			mes "Por que um sacerdote estaria aqui? Melhor começar a confessar meus pecados.";
+			close;
+		case 12:
+			mes Sex == SEX_MALE 
+			? "Você não costumava ser um de nós? Cara, você mudou. Agora parece bem durão..." 
+			: "Você não costumava ser uma de nós? Mulher, você mudou. Agora parece bem durona...";
+			close;
+		case 17:
+			mes Sex == SEX_MALE 
+			? "Cara, você ficou muito irado de repente! Deve ter habilidades inimagináveis!" 
+			: "Mulher, você ficou muito irada de repente! Deve ter habilidades inimagináveis!";
+			close;
+		}
+		next;
+		mes .npcNameTitle$;
+		mes Sex == SEX_MALE ? "Ei, irmão." : "Ei, mulher.";
+		mes "Por que você está aqui? Volte para o lugar de onde veio, volte.";
+		close;
+	}
+	if (job_thief_q == 3 && countitem(1069) > 0 || countitem(1070) > 0) {
+		mes .npcNameTitle$;
+		mes "Eita?";
+		mes "Você juntou os cogumelos para o Teste de Gatuno, né?";
+		next;
+		mes .npcNameTitle$;
+		mes "Fale com o sujeito ao meu lado. Ele é o encarregado de verificar seus cogumelos.";
+		close;
+	}
+	else if (job_thief_q == 3) {
+		mes .npcNameTitle$;
+		mes "E aí, como foi na fazenda de cogumelos? Se divertiu?";
+		next;
+		if (select("Legalzinho:Foi horrível") == 1) {
+			mes .npcNameTitle$;
+			mes "Haha! Nem tudo é um mar de rosas. No nosso ramo, sujar as mãos é inevitável.";
+			close;
+		}
+		mes .npcNameTitle$;
+		mes "Sério? Já passei pelo teste, então agora entendo que aquele lugar não é para qualquer um. Ainda assim, a vida de Gatuno não é só festa e bebedeira.";
+		close;
+	}
+	if (job_thief_q == 2) {
+		mes .npcNameTitle$;
+		mes "Ei, o que você tá fazendo aqui? Não era pra você estar roubando cogumelos? Ou preciso explicar tudo de novo?";
+		next;
+		if  (select("Sim:Não, tudo bem") == 1) {
+			mes .npcNameTitle$;
+			mes "* Revirando os olhos *";
+			mes "Aff, sempre tem um lerdo querendo fazer o teste. Certo, preste muita atenção.";
+			next;
+			mes .npcNameTitle$;
+			mes "O teste consiste em roubar cogumelos de uma fazenda. Não se preocupe, o dono da fazenda é um fanfarrão e merece ser roubado.";
+			next;
+			mes .npcNameTitle$;
+			mes "Enfim, você deve coletar dois tipos de cogumelos:";
+			mes "^0000FFCogumelo Venenoso^000000";
+			mes "^0000FFCogumelo Borrachento^000000";
+			next;
+			mes .npcNameTitle$;
+			mes "Tome cuidado, pois existem monstros na fazenda que estão lá para proteger os cogumelos. Isso não será uma tarefa fácil.";
+			next;
+			mes .npcNameTitle$;
+			mes "Ao voltar aqui depois do furto, você será avaliado de acordo com a qualidade e quantidade de cogumelos.";
+			next;
+			mes .npcNameTitle$;
+			mes "Você ganha 3 pontos por cada Cogumelo Venenoso e 1 ponto por cada Cogumelo Borrachento. Você precisa de um total de 25 pontos para passar no teste.";
+			next;
+			mes .npcNameTitle$;
+			mes "Saia da pirâmide e dirija-se um pouco ao leste das ruínas. Então, você encontrará um dos nossos camaradas esperando por você próximo a duas colunas.";
+			next;
+			mes .npcNameTitle$;
+			mes "Fale com ele para que ele te ajude a entrar na fazenda pela porta dos fundos.";
+			next;
+			mes .npcNameTitle$;
+			mes "No mapa, acredito que as coordenadas para encontrá-lo sejam '^FF0000141, 125^000000.' Basta digitar ^3355FF/where^000000 na janela de chat para verificar suas coordenadas atuais.";
+			close;
+		}
+		mes .npcNameTitle$;
+		mes "Ah, tá. Por um momento, pensei que você tinha algo realmente importante para me contar.";
+		close;
+	}
+	mes .npcNameTitle$;
+	if (job_thief_q == 0) {
+		mes "O que te fez vir parar nesse ninho de ratos?";
+	}
+	else {
+		mes "Ah...";
+		mes "Você voltou.";
+		mes "Tem certeza de que está pronto para tentar novamente?";
+	}
+	next;
+	if (select("Estou aqui para ser um Gatuno!:Nah, Nah... só olhando mesmo") == 1) {
+		if (job_thief_q == 0) {
+			mes .npcNameTitle$;
+			mes "Admiro sua confiança. Mas, saiba que ser um Gatuno não é tão fácil como parece.";
+			next;
+			mes .npcNameTitle$;
+			mes "Sabendo disso...";
+			mes "Você tem mesmo vontade de ser um Gatuno?";
+			next;
+			switch(select("Sim:Não, estou só te enrolando:Por que você se tornou um Gatuno?")) {
+			case 1:
+				mes .npcNameTitle$;
+				mes "Sério...";
+				break;
+			case 2:
+				mes .npcNameTitle$;
+				mes "Ah, sim...";
+				mes "Tô vendo.";
+				break;
+			case 3:
+				mes .npcNameTitle$;
+				mes "Eu...?";
+				mes "Não tive escolha. Era roubar ou passar fome. Mas não devo satisfação da minha vida a ninguém.";
+				break;
+			}
+			next;
+			mes .npcNameTitle$;
+			mes Sex == SEX_MALE 
+			? "Então, você quer se tornar um Gatuno ou não?" 
+			: "Então, você quer se tornar uma Gatuna ou não?";
+			next;
+			switch(select("Sim, eu quero!:Tô com muito medo...")) {
+			case 1:
+				mes .npcNameTitle$;
+				mes "Ok, me fale o seu nome.";
+				next;
+				mes .npcNameTitle$;
+				mes strcharinfo(0) + "?";
+				mes "Qual é a origem do nome " + strcharinfo(0) + "? Enfim, aguarde só um instante.";
+				job_thief_q = 1;
+				next;
+				mes .npcNameTitle$;
+				mes "Tudo certo, o seu registro foi processado. Você pode começar o teste se estiver preparado.";
+				next;
+				switch(select("Estou pronto!:Ainda não estou pronto")) {
+				case 1:
+					break;
+				case 2:
+					mes .npcNameTitle$;
+					mes "Não está pronto?";
+					mes "Como é possível você não estar pronto?!";
+					close;
+				}
+				break;
+			case 2:
+				mes .npcNameTitle$;
+				mes "Com medinho?!?";
+				mes "hahaha!";
+				mes "Ah, fala sério...";
+				mes "Isso é hilário!";
+				close;
+			}
+		}
+		else {
+			mes .npcNameTitle$;
+			mes "Ok...";
+			mes "Me dê um segundo.";
+			next;
+		}
+		mes .npcNameTitle$;
+		mes "Seu nome é...";
+		mes strcharinfo(0) + "? Peraí, onde foi que eu coloquei? Ah, tá aqui. Vamos ver...";
+		next;
+		mes .npcNameTitle$;
+		if (!callfunc("F_CanChangeJob")) {
+			mes Sex == SEX_MALE 
+			? "Que bonitinho! Vejo que você é ambicioso, mas é necessário aprender todas as Habilidades Básicas antes de se tornar um Gatuno." 
+			: "Que bonitinha! Vejo que você é ambiciosa, mas é necessário aprender todas as Habilidades Básicas antes de se tornar uma Gatuna.";
+			close;
+		}
+		mes "Ok. Eu olhei os seus antecedentes criminais, e você tem uma história e tanto. Pode ser que você tenha o que é preciso para ser um Gatuno.";
+		next;
+		mes .npcNameTitle$;
+		mes "Bom... Hoje estou de bom humor, por isso vou te aprovar nesta entrevista. Bom trabalho!";
+		job_thief_q = 2;
+		setquest 1013;
+		next;
+		mes .npcNameTitle$;
+		mes "Agora é hora de colocar suas habilidades à prova. Você sabe alguma coisa sobre o teste?";
+		next;
+		switch(select("Eu sei:Desculpe, não sei")) {
+		case 1:
+			mes .npcNameTitle$;
+			mes "É mesmo? Isso facilita bastante as coisas.";
+			break;
+		case 2:
+			mes .npcNameTitle$;
+			mes "Tudo bem, vou te contar. Preste atenção. Esse teste vai determinar se você é apto a se tornar um Gatuno.";
+			next;
+			mes .npcNameTitle$;
+			mes "Sua missão é se infiltrar na Fazenda do Shibu. Ele é considerado o pior mercador, em termos de caráter, de Morroc.";
+			next;
+			mes .npcNameTitle$;
+			mes "Parte do teste é furtar cogumelos da fazenda dele. Não se preocupe, esse sujeito merece ser roubado.";
+			next;
+			mes .npcNameTitle$;
+			mes "Enfim, você deve coletar dois tipos de cogumelos:";
+			mes "^0000FFCogumelo Venenoso^000000";
+			mes "^0000FFCogumelo Borrachento^000000";
+			next;
+			mes .npcNameTitle$;
+			mes "Tome cuidado, pois existem monstros na fazenda que estão lá para proteger os cogumelos. Isso não será uma tarefa fácil.";
+			next;
+			mes .npcNameTitle$;
+			mes "Ao voltar aqui depois do furto, você será avaliado de acordo com a qualidade e quantidade de cogumelos.";
+			next;
+			mes .npcNameTitle$;
+			mes "Você ganha 3 pontos por cada Cogumelo Venenoso e 1 ponto por cada Cogumelo Borrachento. Você precisa de um total de 25 pontos para passar no teste.";
+			next;
+			mes .npcNameTitle$;
+			mes "Saia da pirâmide e dirija-se um pouco ao leste das ruínas. Então, você encontrará um dos nossos camaradas esperando por você próximo a duas colunas.";
+			next;
+			mes .npcNameTitle$;
+			mes "Fale com ele para que ele te ajude a entrar na fazenda pela porta dos fundos.";
+			next;
+			mes .npcNameTitle$;
+			mes "No mapa, acredito que as coordenadas para encontrá-lo sejam '^FF0000141, 125^000000.' Basta digitar ^3355FF/where^000000 na janela de chat para verificar suas coordenadas atuais.";
+		}
+		next;
+		mes .npcNameTitle$;
+		mes "Não se esqueça de planejar e se preparar antes de entrar na Fazenda de Cogumelos. Mova-se o mais rápido possível e tente não ser morto, está bem?";
+		close;
+	}
+	close;
+}
+
+moc_prydb1,42,133,2	script	Camarada	118,{
+
+	.npcNameTitle$ = "[Camarada]";
+	.npcNameTitle2$ = "[Breno]";
+	.npcNameTitle3$ = "[Chefão]";
+
+	if (BaseJob == Job_Thief) {
+		mes .npcNameTitle2$;
+		mes "Ainda não temos nenhum evento especial. Volte outra vez quando tivermos novidades, beleza?";
+		close;
+	}
+	else if (BaseJob != Job_Novice && BaseJob != Job_Thief) {
+		mes .npcNameTitle$;
+		mes "Hmm... Você não parece um Gatuno.";
+		next;
+		mes .npcNameTitle$;
+		mes "Que droga você está fazendo aqui afinal?";
+		close;
+	}
+	if (job_thief_q == 0 || job_thief_q == 1) {
+		mes .npcNameTitle$;
+		mes "Qual é o problema? Se você quer ser um Gatuno, fale com a garota ao meu lado.";
+		close;
+	}
+	else if (job_thief_q == 2) {
+		mes .npcNameTitle$;
+		mes "Já passou na entrevista?";
+		mes "Então, o que está esperando?";
+		close;
+	}
+	else if (job_thief_q == 3) {
+		mes .npcNameTitle$;
+		mes "Ah, a guia me contou sobre você. Deixa eu ver seus cogumelos...";
+		if (countitem(1069) == 0 && countitem(1070) == 0) {
+			next;
+			mes .npcNameTitle$;
+			mes "Que droga...";
+			mes "Nem um único cogumelo?! Vá pegar os cogumelos! Se não fizer isso, não será aprovado no teste e não se tornará um Gatuno!";
+			close;
+		}
+		next;
+		set .@thief_item1,countitem(1069) * 3;
+		set .@thief_item2,countitem(1070);
+		set .@total_thief,.@thief_item1 + .@thief_item2;
+		set .@money_thief,((.@thief_item1 * 5) + (.@thief_item2 * 2)) + 200;
+		mes .npcNameTitle$;
+		if (countitem(1069) != 0) {
+			mes "Vamos começar verificando os Cogumelos Venenosos que você conseguiu.";
+			mes "Huh, " + countitem(1069) + " unidades.";
+		}
+		if (countitem(1070) != 0)
+			mes "Certo, agora deixe-me ver os Cogumelos Borrachentos. Você conseguiu " + countitem(1070) + " unidades.";
+		next;
+		mes .npcNameTitle$;
+		mes "Com isso, o seu total seria de...";
+		next;
+		mes .npcNameTitle$;
+		mes "Hmmm. " + .@total_thief + " graus, multiplicados pela velocidade da luz, divididos pela integral de pi vezes a altura, somados ao valor absoluto da política...";
+		next;
+		mes .npcNameTitle$;
+		mes "Ok!";
+		mes "Entendi.";
+		next;
+		mes .npcNameTitle$;
+		if (.@total_thief > 25) {
+			mes "Você conseguiu mais de 25 pontos! Fantástico!";
+		}
+		else if (.@total_thief == 25) {
+			mes "Exatamente 25 pontos!";
+			mes "Você conseguiu! Fantástico!";
+		}
+		else {
+			mes "Sem dúvida, menos de 25 pontos que você precisa para ser aprovado. Volte à fazenda e consiga mais cogumelos!";
+			close;
+		}
+		next;
+		mes .npcNameTitle$;
+		mes strcharinfo(0) + "...";
+		mes "Você passou no Teste Oficial de Gatuno. Agora você é um de nós.";
+		if (countitem(1069) != 0) delitem 1069,countitem(1069); //Mushroom_Of_Thief_1
+		if (countitem(1070) != 0) delitem 1070,countitem(1070); //Mushroom_Of_Thief_2
+		callfunc "Job_Change",Job_Thief;
+		callfunc "F_ClearJobVar";
+		completequest 1013;
+		next;
+		mes .npcNameTitle3$;
+		mes "Parabéns por se tornar um Gatuno! A partir de agora, seja um exemplo de honra para a Guilda dos Gatunos.";
+		next;
+		mes .npcNameTitle3$;
+		mes "Se trouxer desgraça à nossa Guilda, será punido severamente. Espero que traga orgulho aos nossos camaradas.";
+		next;
+		mes .npcNameTitle2$;
+		mes "*Ahem*";
+		mes "Bem-vindo(a) à Guilda, camarada! Meu nome é Breno, e cuido dos recursos humanos aqui.";
+		next;
+		mes .npcNameTitle2$;
+		mes "Aqui está um pequeno auxílio para um iniciante como você. Gaste como quiser, beleza? Nos vemos por aí.";
+		Zeny += .@money_thief;
+		close;
+	}
+}
+
+moc_ruins,141,125,3	script	Sr. Irrelevante	83,{
+
+		.npcNameTitle$ = "[Sr. Irrelevante]";
+
+	if (BaseJob == Job_Thief) {
+		mes .npcNameTitle$;
+		mes "Olha só, agora você é um Gatuno. Eu sempre soube que você seria um de nós.";
+		next;
+		mes .npcNameTitle$;
+		mes "Saquear uma fazenda de cogumelos é muito fácil para você agora. É hora de aprimorar suas habilidades e se tornar um especialista em nossa arte.";
+		close;
+	}
+	else if (BaseJob != Job_Novice && BaseJob != Job_Thief) {
+		mes .npcNameTitle$;
+		switch(rand(5)) {
+		case 1:
+			mes "Uma breja trincando cairia bem hoje.";
+			close;
+		case 2:
+			mes "Olha pra baixo.";
+			mes "Passa a grana!";
+			next;
+			mes .npcNameTitle$;
+			mes "Brincadeira, estou fora do expediente.";
+			close;
+		case 3:
+			mes "QUEM VOCÊ ESTÁ CHAMANDO DE PSICOPATA?!?!";
+			close;
+		case 4:
+			mes "Eu não tenho nada para dizer a você. Você poderia me deixar em paz?";
+			close;
+		default:
+			mes "Hoje parece ser um bom dia para ir às pirâmides e caçar com alguns dos meus amigos.";
+			close;
+		}
+	}
+	if (job_thief_q == 3) {
+		mes .npcNameTitle$;
+		mes "Hahahahaha!";
+		mes "Não passou no teste ainda? Tudo bem, vou te ajudar a entrar...";
+		close2;
+		switch(rand(5)) {
+		case 1: warp "job_thief1",228,106; end;
+		case 2: warp "job_thief1",38,50; end;
+		case 3: warp "job_thief1",66,331; end;
+		case 4: warp "job_thief1",196,331; end;
+		default: warp "job_thief1",309,234; end;
+		}
+	}
+	else if (job_thief_q == 2) {
+		mes .npcNameTitle$;
+		mes "Hmm...";
+		mes "Veio fazer o teste, não foi? Consigo ver nos seus olhos que você sabe alguma coisa.";
+		next;
+		mes .npcNameTitle$;
+		mes "Seu nome é " + strcharinfo(0) + "? Ah, está na lista. Tudo bem, vou te deixar entrar na Fazenda de Cogumelos, mas não posso garantir a sua segurança...";
+		close2;
+		set job_thief_q,3;
+		switch(rand(5)) {
+		case 1: warp "job_thief1",228,106; end;
+		case 2: warp "job_thief1",38,50; end;
+		case 3: warp "job_thief1",66,331; end;
+		case 4: warp "job_thief1",196,331; end;
+		default: warp "job_thief1",309,234; end;
+		}
+	}
+	else if (job_thief_q == 1) {
+		mes .npcNameTitle$;
+		mes "Tem esse cheiro estranho vindo de... VOCÊ. Agora, por que será?";
+		close;
+	}
+	mes .npcNameTitle$;
+	mes "Ei, Aprendiz! Por que não entra para a Guilda dos Gatunos? Vocês novatos são sempre bem-vindos para se juntar a nós e à nossa causa egoísta.";
+	next;
+	mes .npcNameTitle$;
+	mes "Se quiser saber mais, dirija-se à Sala Subterrânea na Pirâmide e converse com meus camaradas.";
+	close;
+}
+
+// Monsters
+//============================================================
+job_thief1,0,0	monster	Cogumelo	1182,180
+job_thief1,0,0	monster	Fabre	1184,50
+job_thief1,0,0	monster	Chonchon	1183,50
+job_thief1,0,0	monster	Esporo	1014,30
+
+//============================================================
+// mapflag
+//============================================================

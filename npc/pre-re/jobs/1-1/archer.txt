@@ -1,0 +1,251 @@
+//===== rAthena Script ======================================= 
+//= Archer Job Quest
+//===== By: ================================================== 
+//= kobra_k88; L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 1.9
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job quest for Archer classes
+//===== Additional Comments: ================================= 
+//= 1.0 Fully working.
+//= 1.1 Added instant job change for High Novice [Lupus]
+//= 1.3 Added Baby Class support [Lupus]
+//= 1.4 Optimised and moved first checker to Jfunc1-1 [massdriller]
+//= 1.5 Now saves/restores all quest skills [Lupus]
+//= 1.6 Merged back JFunc [Lupus]
+//= 1.7 Rescripted to Aegis 10.3 stadards. [L0ne_W0lf]
+//=     Arrow reward is now equal to the type sof trunks brought.
+//=     No longer uses function "F_ToHigh"
+//= 1.7a Fixed minor dialogue bug at Grade==25 [Lupus]
+//= 1.8 Fixed mistake in condition check. [L0ne_W0lf]
+//= 1.9 Added Quest Log commands. [L0ne_W0lf]
+//= 2.0 Translated into Brazilian Portuguese. [Syon]
+//============================================================ 
+
+payon_in02,64,71,4	script	Arqueiro#archer	85,{
+
+	.npcNameTitle$ = "[Membro da Guilda dos Arqueiros]";
+
+	if (Upper == 1) {
+		if (Class == Job_Novice_High && (ADVJOB == Job_Sniper || ADVJOB == Job_Clown || ADVJOB == Job_Gypsy)) {
+			mes .npcNameTitle$;
+			mes "Você não me é estranho...";
+			mes "Você quer ou não ser um arqueiro, hã?";
+			next;
+			mes .npcNameTitle$;
+			if (!callfunc("F_CanChangeJob")) {
+				mes "Como você já sabe, para se tornar um arqueiro, é necessário aprender todas as Habilidades Básicas primeiro.";
+				next;
+				mes .npcNameTitle$;
+				mes "Certo? Cuide-se.";
+				close;
+			}
+			mes "Bom... então não preciso dizer muito.";
+			mes "Basta mirar bem, usando os seus sentidos.";
+			next;
+			skill "NV_TRICKDEAD",0,SKILL_PERM;
+			jobchange Job_Archer_high;
+			skill "AC_MAKINGARROW",1,SKILL_PERM;
+			skill "AC_CHARGEARROW",1,SKILL_PERM;
+			mes .npcNameTitle$;
+			mes "Mesmo que não haja uma recompensa especial para você desta vez, espero que entenda. Cuide-se bem.";
+			close;
+		}
+		else {
+			mes .npcNameTitle$;
+			mes "O que você está olhando? Nunca viu um arqueiro antes?";
+			mes "";
+			mes "Siga o seu caminho.";
+			mes "Eu sou especial...";
+			mes "Oops! Não foi isso que eu quis dizer...";
+			next;
+			mes .npcNameTitle$;
+			mes "Esqueça o que eu lhe contei.";
+			mes "Você ouviu tudo errado.";
+			close;
+		}
+	}
+	mes .npcNameTitle$;
+	mes "Bom dia. Como posso te ajudar?";
+	next;
+	switch(select("Eu quero ser um arqueiro:O que é preciso para ser um arqueiro?:Não preciso de ajuda")) {
+	case 1:
+		if (BaseJob == Job_Archer) {
+			mes .npcNameTitle$;
+			mes "Você já é um arqueiro.";
+			close;
+		}
+		else if (BaseJob != Job_Archer && BaseJob != Job_Novice) {
+			mes .npcNameTitle$;
+			mes "Hmm... Você não parece ser um aprendiz...";
+			mes "Seja lá o que você for, você não pode ser um arqueiro, porque já tem uma classe definida.";
+			close;
+		}
+		if (job_archer_q == 0) {
+			mes .npcNameTitle$;
+			mes "Você quer ser um arqueiro?";
+			mes "Se sim, preencha este formulário.";
+			next;
+			if (select("Inscrever-se:Cancelar") == 1) {
+				set job_archer_q,1;
+				setquest 1004;
+				mes .npcNameTitle$;
+				mes "Ok, assine aqui... Certo... Hmm, você será promovido de classe assim que cumprir os pré-requisitos necessários.";
+				next;
+				mes .npcNameTitle$;
+				mes "Se você acha que está pronto, podemos começar agora.";
+				mes "Você está pronto?";
+				next;
+				if (select("Sim!:Não, não estou pronto ainda") == 1) {
+					mes .npcNameTitle$;
+					mes "Vamos ver então.";
+					next;
+				}
+				else {
+					mes .npcNameTitle$;
+					mes "Compreendo...";
+					mes "Se você quiser saber os pré-requisitos para se tornar um Arqueiro, apenas fale comigo.";
+					close;
+				}
+			}
+			else {
+			mes .npcNameTitle$;
+			mes "Até mais!";
+			close;
+			}
+		}
+		mes .npcNameTitle$;
+		mes "Você se chama " + strcharinfo(0) + "?";
+		next;
+		if (!callfunc("F_CanChangeJob")) {
+			mes .npcNameTitle$;
+			mes "O seu nível como aprendiz está abaixo do necessário...";
+			next;
+			mes .npcNameTitle$;
+			mes "Você deve chegar ao nível 10 de classe para se tornar um arqueiro e aprender todas as Habilidades Básicas.";
+			next;
+			mes .npcNameTitle$;
+			mes "Volte quando estiver pronto.";
+			close;
+		}
+		if (job_archer_q == 1) {
+			set .@archer_item1,countitem(1066) * 5;
+			set .@archer_item2,countitem(1067) * 3;
+			set .@archer_item3,countitem(1068) * 2;
+			set .@archer_item4,countitem(1019);
+			set .@total_archer,.@archer_item1 + .@archer_item2 + .@archer_item3 + .@archer_item4;
+			set .@total_archer2,(((.@archer_item2 + .@archer_item3) * 2) + .@archer_item4);
+			mes .npcNameTitle$;
+			mes "Ótimo! Bom trabalho!";
+			mes "Agora, vamos ver se você trouxe troncos suficientes para fazermos um arco.";
+			next;
+			mes .npcNameTitle$;
+			if (countitem(1066) == 0 && countitem(1067) == 0 && countitem(1068) == 0 && countitem(1019) == 0) {
+				mes "...Hmm...";
+				mes "Você não me trouxe nada!";
+				close;
+			}
+			if (countitem(1066)) mes "Tronco Tipo 1: " + countitem(1066) + " unidades: " + .@archer_item1 + ".";
+			if (countitem(1067)) mes "Tronco Tipo 2: " + countitem(1067) + " unidades: " + .@archer_item2 + ".";
+			if (countitem(1068)) mes "Tronco Tipo 3: " + countitem(1068) + " unidades: " + .@archer_item3 + ".";
+			if (countitem(1019)) mes "Tronco Tipo 4: " + countitem(1019) + " unidades: " + .@archer_item4 + ".";
+			if (.@total_archer < 25) {
+				mes "O seu total de pontos foi: ^FF0000" + .@total_archer + "^000000/40";
+				next;
+				mes .npcNameTitle$;
+				mes "Menos de 25? Você deve fazer pelo menos 25 pontos. Se esforce um pouco mais...";
+				close;
+			}
+			else {
+				mes "O seu total de pontos foi: ^0000FF" + .@total_archer + "^000000/40";
+				next;
+				mes .npcNameTitle$;
+				if (.@total_archer > 40) {
+					mes "Nossa! Mais de 40!";
+					mes "Fantástico! Meus parabéns!";
+				}
+				else if (.@total_archer > 30) {
+					mes "Mais de 30! Ótimo! Parabéns.";
+					mes "Passou raspando... Mas tudo bem!";
+				}
+				else {
+					mes "*Suspira*";
+					mes "Bem, você passou por muito pouco... De qualquer forma, meus parabéns.";
+				}
+			}
+			next;
+			mes .npcNameTitle$;
+			mes "Vou mandar o material para o Departamento de Produção de Arcos.";
+			if (countitem(1066) != 0) delitem 1066,countitem(1066); //Tree_Of_Archer_1
+			if (countitem(1067) != 0) delitem 1067,countitem(1067); //Tree_Of_Archer_2
+			if (countitem(1068) != 0) delitem 1068,countitem(1068); //Tree_Of_Archer_3
+			if (countitem(1019) != 0) delitem 1019,countitem(1019); //Wooden_Block
+		}
+		next;
+		callfunc "Job_Change",Job_Archer;
+		callfunc "F_ClearJobVar";
+		completequest 1004;
+		mes .npcNameTitle$;
+		mes "Parabéns, você passou no teste!";
+		mes "Como resultado, você agora é um Arqueiro!";
+		next;
+		mes .npcNameTitle$;
+		mes "Parabéns! Nós esperamos que você contribua para a grandiosidade de nossa Guilda!";
+		next;
+		mes .npcNameTitle$;
+		mes "Ótimo! O seu arco chegou do Departamento de Produção, aqui está ele.";
+		getitem 1702,1; //Bow_
+		getitem 1750,.@total_archer2; //Arrow
+		next;
+		mes .npcNameTitle$;
+		mes "Agora você é um Arqueiro legítimo, com arco, flechas e tudo mais!";
+		next;
+		mes .npcNameTitle$;
+		mes "Boa sorte em sua jornada pelo mundo, espero que você se torne o melhor de todos os Arqueiros!";
+		close;
+	case 2:
+		mes .npcNameTitle$;
+		mes "Eu vou explicar os pré-requisitos para se tornar um Arqueiro:";
+		next;
+		if (BaseJob != Job_Novice) {
+			if (BaseJob == Job_Archer) {
+				mes .npcNameTitle$;
+				mes "Mas...";
+				mes "Você já é um Arqueiro...";
+				mes "Já deveria saber disso...";
+				close;
+			}
+			else {
+				mes .npcNameTitle$;
+				mes "Espera, espera... Você já tem uma classe definida. Essa informação é desnecessária.";
+				close;
+			}
+		}
+		mes .npcNameTitle$;
+		mes "Antes de tudo, você deve alcançar nível 10 de classe como Aprendiz.";
+		next;
+		mes .npcNameTitle$;
+		mes "Para ser um arqueiro eficiente, é essencial ter alta concentração, pois mirar com precisão é desafiador. Sendo assim, pessoas com dificuldades de concentração não serão aceitas.";
+		next;
+		mes .npcNameTitle$;
+		mes "Você vai precisar juntar quantos ^FF0000Troncos^000000 conseguir.";
+		next;
+		mes .npcNameTitle$;
+		mes "Existem 4 tipos de Troncos, de diferentes qualidades de madeira, logo cada um tem uma pontuação diferente.";		
+		next;
+		mes .npcNameTitle$;
+		mes "Para se tornar um Arqueiro, você precisará obter pelo menos ^0000FF25^000000 pontos em um total de 40.";
+		next;
+		mes .npcNameTitle$;
+		mes "Você pode conseguir troncos dos Salgueiros. Mesmo que não sejam monstros perigosos, tenha cuidado.";
+		close;
+	case 3:
+		mes .npcNameTitle$;
+		mes "Boa sorte!";
+		close;
+	}
+}
+

@@ -1,0 +1,436 @@
+//===== rAthena Script ======================================= 
+//= Acolyte Job Quest
+//===== By: ================================================== 
+//= kobra_k88; L0ne_W0lf
+//===== Current Version: ===================================== 
+//= 2.2
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= [Official Conversion]
+//= Job quest for Acolyte classes
+//===== Additional Comments: ================================= 
+//= 1.0 Fully working.
+//= 1.1 Added function calls for Priest Quest.
+//= 1.2 Fixed Marthilda, Yosuke bugs. [Lupus]
+//= 1.2a Added instant job change for High Novice [Lupus]
+//= 1.3 Added Baby Class support [Lupus]
+//= 1.4 Optimised and moved first checker to Jfunc1-1 [massdriller]
+//= 1.5 Now saves/restores all quest skills [Lupus]
+//= 1.6 Merged back JFunc [Lupus]
+//= 1.7 Rescripted to Aegis 10.3 stadards. [L0ne_W0lf]
+//=     No longer uses function "F_ToHigh"
+//=     Proper dialog for Priest job quest is unused (for now.)
+//= 1.7a Functions now make use of proper priest quest dialog [L0ne_W0lf]
+//= 1.8 Removed an Unnecessary "set job_acolyte_q,0;" [Samuray22]
+//= 1.8a More bug fixes care of Crashy. [L0ne_W0lf]
+//= 1.9 Changed Marthilda to Mathilda. [L0ne_W0llf]
+//= 2.0 Fixed High Acolytesnot being given holy light. [L0ne_W0lf]
+//= 2.1 Added Quest Log commands. [L0ne_W0lf]
+//= 2.2 Fixed an issue with completequest by adding checkquest. [Kisuka]
+//= 2.3 Translated into Brazilian Portuguese. [Syon]
+//============================================================ 
+
+prt_church,184,41,4	script	Necrus#aco	60,{
+
+	// Nome do NPC, Padre Necrus
+	.npcNameTitle$ = "[Necrus]";
+
+	if (Upper == 1) {
+		if (ADVJOB == Job_High_Priest || ADVJOB == Job_Champion) {
+			if (Class == Job_Novice_High) {
+				mes .npcNameTitle$;
+				mes "Depois de muito tempo, você voltou a este lugar.";
+				mes "Você deve ter ouvido, visto e experimentado muitas coisas.";
+				next;
+				if (!callfunc("F_CanChangeJob")) {
+					mes .npcNameTitle$;
+					mes "Posso torná-lo um Noviço, mas será necessário aprender sobre Habilidades Básicas primeiro.";
+					next;
+					mes .npcNameTitle$;
+					mes "Enquanto isso, vou esperar até que você esteja pronto. Que Deus te abençoe em seu caminho.";
+					close;
+				}
+				mes .npcNameTitle$;
+				mes "Você volta a trilhar a estrada do clero, toda a igreja de Prontera dá as boas-vindas a você.";
+				next;
+				skill "NV_TRICKDEAD",0,SKILL_PERM;
+				jobchange Job_Acolyte_High;
+				skill "AL_HOLYLIGHT",1,SKILL_PERM;
+				mes .npcNameTitle$;
+				mes "Agora, siga em frente e procure aqueles que precisam da sua ajuda. Que Deus ilumine o seu caminho.";
+				close;
+			}
+			else {
+				mes .npcNameTitle$;
+				mes "Agora, siga em frente e procure aqueles que precisam da sua ajuda. Que Deus ilumine o seu caminho.";
+				close;
+			}
+		}
+		else {
+			mes .npcNameTitle$;
+			mes "Você renasceu depois de muito tempo.";
+			mes "";
+			mes "Você deve ter ouvido, visto e experimentado muitas coisas.";
+			next;
+			mes .npcNameTitle$;
+			mes "Entretanto, suas experiências de vida não condizem com o caminho de um Noviço.";
+			mes "Recorde-se de suas memórias e descubra qual o seu verdadeiro caminho.";
+			close;
+		}
+	}
+	mes .npcNameTitle$;
+	mes "O que você procura na casa do Senhor?";
+	next;
+	switch(select("Eu desejo me tornar um Noviço:Como me torno um noviço?:Eu vim olhar os vitrais")) {
+	case 1:
+		mes .npcNameTitle$;
+		if (BaseJob == Job_Acolyte) {
+			mes "Mas meu filho(a), você já é um Noviço.";
+			close;
+		}
+		else if (BaseJob != Job_Novice) {
+			mes "Vejo que você já escolheu o seu caminho. Desejo-lhe muito sucesso!";
+			close;
+		}
+		if (job_acolyte_q == 0) {
+			mes "Você deseja mesmo, de todo o seu coração, se tornar um servo do Senhor?";
+			next;
+			if (select("Sim, Padre.:Não, eu menti.") == 1) {
+				mes .npcNameTitle$;
+				mes "Muito bom. Eu aceito a vontade de " + strcharinfo(0) + " em se tornar um Noviço(a).";
+				next;
+				mes .npcNameTitle$;
+				mes "Espero que você entenda que, para se tornar um servo do Senhor, é necessário realizar uma penitência.";
+				mes "";
+				mes "A sua penitência é uma forma de peregrinação.";
+				next;
+				mes .npcNameTitle$;
+				switch(rand(3)) {
+				default:
+					set job_acolyte_q,2;
+					mes "Você deve visitar o ^000077Irmão Simão^000000, que se isolou com os animais perto da Abadia ao Nordeste de Prontera.";
+					setquest 1001;
+					break;
+				case 1:
+					set job_acolyte_q,3;
+					mes "Você deve visitar a ^000077Irmã Matilda^000000, que se isolou no deserto, no mapa ao Norte de Morroc.";
+					setquest 1002;
+					break;
+				case 2:
+					set job_acolyte_q,4;
+					mes "Você deve visitar o ^000077Irmão Bartolomeu^000000, que pode ser encontrado em uma ponte à Noroeste de Prontera.";
+					setquest 1003;
+					break;
+				}
+				next;
+				mes .npcNameTitle$;
+				mes "Que a graça do Senhor o acompanhe em sua jornada!";
+				close;
+			}
+			mes .npcNameTitle$;
+			mes "Você mentiu? É bom que você tenha confessado o seu erro. Vá em paz, meu filho(a).";
+			close;
+		}
+		mes "Oh, você voltou! Deixe-me verificar se você está pronto para servir. Vamos ver...";
+		next;
+		mes .npcNameTitle$;
+		if (!callfunc("F_CanChangeJob")) {
+			mes "Meu bom Deus! Ainda não possui o nível 9 de Habilidades Básicas? Não é possível servir ao Senhor assim.";
+			close;
+		}
+		if (job_acolyte_q < 5) {
+			mes "Deixe-me dizer qual será sua peregrinação.";
+			next;
+			mes .npcNameTitle$;
+			switch(job_acolyte_q) {
+			case 2:
+				mes "Você deve visitar o ^000077Irmão Simão^000000, que se isolou com os animais perto da Abadia ao Nordeste de Prontera.";
+				break;
+			case 3:
+				mes "Você deve visitar a ^000077Irmã Matilda^000000, que se isolou no deserto, no mapa ao Norte de Morroc.";
+				break;
+			case 4:
+				mes "Você deve visitar o ^000077Irmão Bartolomeu^000000, que pode ser encontrado em uma ponte à Noroeste de Prontera.";
+				break;
+			}
+			next;
+			mes .npcNameTitle$;
+			mes "Por favor, complete sua penitência antes de retornar.";
+			close;
+		}
+		mes "Você concluiu sua peregrinação, e isso enche meu coração de alegria. Neste momento, recebo-o nos caminhos do Senhor e o torno um Noviço.";
+		next;
+		skill "NV_TRICKDEAD",0,SKILL_PERM;
+		callfunc "Job_Change",Job_Acolyte;
+		callfunc "F_ClearJobVar";
+		if(checkquest(1001) != -1) {
+			completequest 1001;
+		}
+		else if(checkquest(1002) != -1) {
+			completequest 1002;
+		}
+		else {
+			completequest 1003;
+		}
+		mes .npcNameTitle$;
+		mes "Tenha sempre Deus em seu coração, seja nas horas de tranquilidade ou no calor da batalha, nunca se esqueça Dele, que nos ama tanto, apesar de sermos imperfeitos.";
+		next;
+		mes .npcNameTitle$;
+		mes "Assim como você não hesitou em sua penitência, espero que nunca hesite diante das tentações do mundo.";
+		close;
+	case 2:
+		mes .npcNameTitle$;
+		mes "Os pré-requisitos para se tornar um Noviço são dois. Por favor, ouça-os com atenção.";
+		next;
+		mes .npcNameTitle$;
+		mes "Antes de tudo, você deve alcançar Nível 9 de Classe como Aprendiz.","";
+		mes "Com esse nível, será possível que você realize uma peregrinação em nome do Senhor.";
+		next;
+		mes .npcNameTitle$;
+		if (job_acolyte_q != 0) {
+			switch(job_acolyte_q) {
+			case 2:
+				mes "Você deve visitar o ^000077Irmão Simão^000000, que se isolou com os animais perto da Abadia ao Nordeste de Prontera.";
+				break;
+			case 3:
+				mes "Você deve visitar a ^000077Irmã Matilda^000000, que se isolou no deserto, no mapa ao Norte de Morroc.";
+				break;
+			default:
+				mes "Você deve visitar o ^000077Irmão Bartolomeu^000000, que pode ser encontrado em uma ponte à Noroeste de Prontera.";
+				break;
+			}
+			next;
+			mes .npcNameTitle$;
+			mes "Que a graça do Senhor o acompanhe em sua jornada!";
+		}
+		else {
+			mes "Que a vontade do Senhor seja a sua segurança.";
+		}
+		next;
+		mes .npcNameTitle$;
+		mes "Por favor, volte após cumprir os pré-requisitos.";
+		mes "";
+		mes "Contanto que seu desejo de servir a Deus e aos outros seja sincero, você conseguirá alcançar seus objetivos.";
+		mes "";
+		mes "Que a paz de Deus esteja com você!";
+		close;
+	case 3:
+		mes .npcNameTitle$;
+		mes "Está bem, meu filho(a). Você é sempre bem-vindo.";
+		close;
+	}
+}
+
+prt_fild03,365,255,2	script	Irmão Simão#aco	89,{
+
+	.npcNameTitle$ = "^4A6BF0[Irmão Simão]^000000";
+
+	mes .npcNameTitle$;
+	if (BaseJob == Job_Novice) {
+		if (job_acolyte_q == 6) {
+			mes "Não se preocupe, já enviei um pombo à Prontera para avisá-lo de sua visita.";
+			next;
+			mes .npcNameTitle$;
+			mes "Agora se preocupe apenas em como voltar em segurança para a cidade.";
+			close;
+		}
+		if (job_acolyte_q != 0) {
+			if (job_acolyte_q == 2) {
+				mes "Oh... Você é o jovem que deseja se tornar um noviço, não é?";
+				next;
+				mes .npcNameTitle$;
+				mes "Você se chama " + strcharinfo(0) + ", certo? Bem, muito obrigado por ter vindo me visitar!";
+				mes "Eu acredito que Necrus já lhe contou sobre os noviços.";
+				next;
+				mes .npcNameTitle$;
+				mes "Eu espero que a sua Fé nunca falhe nos anos de provação que estão por vir.";
+				next;
+				mes .npcNameTitle$;
+				mes "Entretanto, as lições que você veio aprender aqui eram as que você já esperava.";
+				next;
+				mes .npcNameTitle$;
+				mes "Eu mandarei a notícia de que você chegou até aqui para o Necrus.";
+				mes "Desejo-lhe uma jornada segura de volta à Prontera.";
+				next;
+				mes .npcNameTitle$;
+				mes "Adeus e que o Senhor esteja contigo.";
+				close2;
+				savepoint "prt_fild03",361,255,1,1;
+				set job_acolyte_q,6;
+				end;
+			}
+			else {
+				mes "Oh... Você é o jovem que deseja se tornar um noviço, não é?";
+				next;
+				mes .npcNameTitle$;
+				mes "Você se chama " + strcharinfo(0) + ", certo? Hmm.. Sinto informar-lhe que seu nome não se encontra em minha lista.";
+				next;
+				mes .npcNameTitle$;
+				mes "Recomendo que você verifique corretamente qual é a sua peregrinação.";
+				close;
+			}
+		}
+		else {
+			mes "O que o traz aqui? Este lugar possui monstros muito fortes para alguém como você.";
+			close;
+		}
+	}
+	else if (BaseJob == Job_Acolyte) callfunc "F_FatherRub";
+	else {
+		if (BaseJob == Job_Priest) {
+			mes "Saudações.";
+			next;
+			mes .npcNameTitle$;
+			mes "Seja bem-vindo, sinta-se à vontade para sentar e contemplar a palavra do Senhor comigo.";
+			mes "Este lugar é lindo, mesmo quando o perigo nos acompanha. Podemos sentir a serenidade dele...";
+			close;
+		}
+		else {
+			mes "Oh...";
+			mes "Você veio aqui para treinar ou é somente um forasteiro?";
+			next;
+			mes .npcNameTitle$;
+			mes "Independente de quem você seja, tome cuidado. Os monstros aqui são incrivelmente fortes, apesar de sua aparência bonitinha.";
+			close;
+		}
+	}
+}
+
+moc_fild07,41,355,4	script	Irmã Matilda#2aco	95,{
+
+	.npcNameTitle$ = "^4A6BF0[Irmã Matilda]^000000";
+
+	mes .npcNameTitle$;
+	if (BaseJob == Job_Novice) {
+		if (job_acolyte_q == 7) {
+			mes "Não se preocupe, já enviei um pombo à Prontera para avisá-lo de sua visita.";
+			next;
+			mes .npcNameTitle$;
+			mes "Agora se preocupe apenas em como voltar em segurança para a cidade.";
+			close;
+		}
+		if (job_acolyte_q != 0) {
+			if (job_acolyte_q == 3) {
+				mes "Oh... Você é o jovem que deseja se tornar um noviço, não é?";
+				next;
+				mes .npcNameTitle$;
+				mes "Você se chama " + strcharinfo(0) + ", certo? Bem, muito obrigada por ter vindo me visitar!";
+				next;
+				mes .npcNameTitle$;
+				mes "Eu mandarei a notícia de que você chegou até aqui para o Necrus.";
+				mes "";
+				mes "Desejo-lhe uma jornada segura de volta à Prontera.";
+				close2;
+				savepoint "moc_fild07",35,355,1,1;
+				set job_acolyte_q,7;
+				end;
+			}
+			else {
+				mes "Oh...";
+				mes "Você é o jovem que deseja se tornar um noviço, não é?";
+				next;
+				mes .npcNameTitle$;
+				mes "Você se chama " + strcharinfo(0) + ", certo? Hmm...";
+				next;
+				mes .npcNameTitle$;
+				mes "Sinto informar-lhe que seu nome não se encontra em minha lista.";
+				next;
+				mes .npcNameTitle$;
+				mes "Recomendo que você verifique corretamente qual é a sua peregrinação.";
+				close;
+			}
+		}
+		else {
+			mes "..........";
+			close;
+		}
+	}
+	else if (BaseJob == Job_Acolyte) callfunc "F_MotherMart";
+	else {
+		if (BaseJob == Job_Priest) {
+			mes "Olá, " + strcharinfo(0) + "!!!";
+			next;
+			mes .npcNameTitle$;
+			mes "Como você tem praticado a graça do Senhor depois de tanto tempo?","";
+			mes "Eu espero que esteja gostando de viver sob a graça do Senhor.";
+			close;
+		}
+		else {
+			mes "Que Deus esteja com você...";
+			close;
+		}
+	}
+}
+
+prt_fild00,208,218,6	script	Irmão Bartolomeu#3aco	98,{
+
+	.npcNameTitle$ = "^4A6BF0[Irmão Bartolomeu]^000000";
+
+	mes .npcNameTitle$;
+	if (BaseJob == Job_Novice) {
+		if (job_acolyte_q == 8) {
+			mes "Eu acho melhor você começar o seu caminho de volta...";
+			next;
+			mes .npcNameTitle$;
+			mes "Ou você quer ficar aqui comigo vendo a grama crescer!?";
+			close;
+		}
+		if (job_acolyte_q != 0) {
+			if (job_acolyte_q == 4) {
+				mes "Ou você é um Aprendiz querendo ser Noviço ou eu sou um Caramelo!";
+				next;
+				mes .npcNameTitle$;
+				mes "Nada mal, hein? Chegou até aqui inteiro...";
+				mes "Pode me falar o seu nome?";
+				next;
+				mes .npcNameTitle$;
+				mes strcharinfo(0) + ", certo?";
+				next;
+				mes .npcNameTitle$;
+				mes "Está tudo certo, vou avisar o Necrus que você chegou até aqui.";
+				next;
+				mes .npcNameTitle$;
+				mes "Agora, volte para Prontera e fale com ele para finalizar sua peregrinação, meu jovem(a).";
+				close2;
+				savepoint "prt_fild00",206,230,1,1;
+				set job_acolyte_q,8;
+				end;
+			}
+			else {
+				mes "Ei, você aí!";
+				mes "Ou você é um Aprendiz querendo ser Noviço ou eu sou um Caramelo!";
+				next;
+				mes .npcNameTitle$;
+				mes "Ótimo trabalho! Chegou até aqui inteiro...";
+				mes "";
+				mes "Qual o seu nome? " + strcharinfo(0) + "? Hmmm... O seu nome não está na minha lista...";
+				next;
+				mes .npcNameTitle$;
+				mes "Acho que você se confundiu, você deve visitar outra pessoa, não eu.";
+				mes "";
+				mes "Volte para Prontera e consulte o Necrus novamente, ou tente se lembrar.";
+				close;
+			}
+		}
+		else {
+			mes "Não, eu não sou o Bicho-Papão da ponte...";
+			close;
+		}
+	}
+	else if (BaseJob == Job_Acolyte) callfunc "F_FatherYos";
+	else {
+		if (BaseJob == Job_Priest) {
+			mes "Ei...";
+			next;
+			mes .npcNameTitle$;
+			mes "Se quiser, venha sentar-se e meditar sobre grandes verdades. A grandiosidade de Deus é magnífica...";
+			close;
+		}
+		else {
+			mes "Você tem algo para me dizer? Infelizmente, para você, eu não tenho nada.";
+			close;
+		}
+	}
+}
+

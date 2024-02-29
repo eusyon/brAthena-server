@@ -1,0 +1,10 @@
+// Altere o 'userid' e 'passwd' para um login e senha de sua preferência. Você deve alterar essa informação no banco de dados também.
+// Coloque o seu IP Público em 'char_ip'.
+// Não altere o 'login_ip' aqui caso nao saiba o que está fazendo.
+// Caso queira ativar o PIN CODE, coloque 'yes' em vez de 'no'.
+userid: s1
+passwd: p1
+login_ip: 127.0.0.1
+char_ip: 127.0.0.1
+server_name: brAthena
+pincode_enabled: no

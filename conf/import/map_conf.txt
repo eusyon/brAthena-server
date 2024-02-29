@@ -1,0 +1,7 @@
+// Altere o 'userid' e 'passwd' para um login e senha de sua preferência. Você deve alterar essa informação no banco de dados também.
+// Coloque o seu IP Público em 'map_ip'.
+// Não altere o 'char_ip' aqui caso nao saiba o que está fazendo.
+userid: s1
+passwd: p1
+char_ip: 127.0.0.1
+map_ip: 127.0.0.1
